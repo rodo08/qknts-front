@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #202020;
+  color: white;
+  font-family: "Rubik", sans-serif;
+}
+
+li {
+  display: flex;
+  align-items: center;
+}
+
+h1,
+p {
+  color: #ffb4c2;
+}
