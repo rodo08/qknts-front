@@ -14,9 +14,9 @@ const HomePage = () => {
         staying organized and productive. Access your notes anytime, anywhere
         with our intuitive and user-friendly app. Streamline your life and focus
         on what truly matters. <br />
-        <h1 className="text-white text-2xl font-semibold pt-4">
+        <span className="text-white text-2xl font-semibold pt-4">
           Start organizing with Quick Notes today!
-        </h1>
+        </span>
       </p>
     </div>
   );
