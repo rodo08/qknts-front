@@ -1,12 +1,11 @@
-import { createContext, useContext } from "react";
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import {
   createTaskRequest,
   getTasksRequest,
   deleteTaskRequest,
   getTaskRequest,
   updateTaskRequest,
-} from "../api/task";
+} from "../api/task"; // Asegúrate de que la ruta sea correcta
 
 const TaskContext = createContext();
 
@@ -14,8 +13,9 @@ export const useTask = () => {
   const context = useContext(TaskContext);
 
   if (!context) {
-    throw new Error("useTask must be used within an TaskProvider");
+    throw new Error("useTask must be used within a TaskProvider");
   }
+
   return context;
 };
 
@@ -30,9 +30,14 @@ export const TaskProvider = ({ children }) => {
       console.log(error);
     }
   };
+
   const createTask = async (task) => {
-    const response = await createTaskRequest(task);
-    console.log(response);
+    try {
+      const response = await createTaskRequest(task);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const deleteTask = async (id) => {
