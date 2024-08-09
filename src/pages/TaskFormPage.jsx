@@ -22,7 +22,7 @@ const TaskFormPage = () => {
       }
     };
     loadtask();
-  }, []);
+  }, [params.id, getTask, setValue]);
 
   const onSubmit = handleSubmit((data) => {
     if (params.id) {

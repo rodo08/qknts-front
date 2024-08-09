@@ -7,7 +7,7 @@ const TaskPage = () => {
 
   useEffect(() => {
     getTasks();
-  }, []);
+  }, [getTasks]);
 
   if (tasks.length === 0) return <h1 className="p-4">No tasks found</h1>;
 
