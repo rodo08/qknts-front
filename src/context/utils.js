@@ -42,8 +42,8 @@ export const loggingIn = async (
   }
 };
 
-export const logout = (setUser, setIsAuthenticated) => {
-  Cookies.remove("token");
+export const logout = async (setUser, setIsAuthenticated) => {
+  await Cookies.remove("token");
   setIsAuthenticated(false);
   setUser(null);
 };
