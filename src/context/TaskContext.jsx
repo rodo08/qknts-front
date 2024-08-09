@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import {
   createTaskRequest,
   getTasksRequest,
@@ -6,6 +6,7 @@ import {
   getTaskRequest,
   updateTaskRequest,
 } from "../api/task"; // Asegúrate de que la ruta sea correcta
+import { useNavigate } from "react-router-dom";
 
 const TaskContext = createContext();
 
@@ -21,6 +22,7 @@ export const useTask = () => {
 
 export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
+  const navigate = useNavigate();
 
   const getTasks = async () => {
     try {
@@ -34,7 +36,11 @@ export const TaskProvider = ({ children }) => {
   const createTask = async (task) => {
     try {
       const response = await createTaskRequest(task);
-      console.log(response);
+      if (response.statusText !== "OK") {
+        return;
+      }
+      await getTasks();
+      navigate("/tasks");
     } catch (error) {
       console.log(error);
     }
@@ -62,11 +68,21 @@ export const TaskProvider = ({ children }) => {
 
   const updateTask = async (id, task) => {
     try {
-      await updateTaskRequest(id, task);
+      const response = await updateTaskRequest(id, task);
+      console.log(response);
+      if (response.statusText !== "OK") {
+        return;
+      }
+      await getTasks();
+      navigate("/tasks");
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    getTasks();
+  }, [setTasks]);
 
   return (
     <TaskContext.Provider

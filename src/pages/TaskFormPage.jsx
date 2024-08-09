@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useTask } from "../context/TaskContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -9,28 +9,32 @@ dayjs.extend(utc);
 const TaskFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
   const { createTask, getTask, updateTask } = useTask();
-  const navigate = useNavigate();
-  const params = useParams();
+
+  const { id } = useParams();
 
   useEffect(() => {
     const loadtask = async () => {
-      if (params.id) {
-        const task = await getTask(params.id);
+      if (id) {
+        const task = await getTask(id);
         console.log(task);
         setValue("title", task.title);
         setValue("description", task.description);
+        setValue("date", dayjs.utc(task.date).format("YYYY-MM-DD"));
+        console.log(task.date);
       }
     };
     loadtask();
-  }, [params.id, getTask, setValue]);
+  }, [id, getTask, setValue]);
 
-  const onSubmit = handleSubmit((data) => {
-    if (params.id) {
-      updateTask(params.id, { ...data, date: dayjs.utc(data.date).format() });
+  const onSubmit = handleSubmit(async (data) => {
+    if (id) {
+      updateTask(id, {
+        ...data,
+        date: dayjs.utc(data.date),
+      });
     } else {
-      createTask({ ...data, date: dayjs.utc(data.date).format() });
+      createTask({ ...data, date: dayjs.utc(data.date) });
     }
-    navigate("/tasks");
   });
 
   return (
