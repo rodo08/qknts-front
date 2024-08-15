@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTask } from "../context/TaskContext";
-import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -9,36 +9,36 @@ dayjs.extend(utc);
 const TaskFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
   const { createTask, getTask, updateTask } = useTask();
-
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const params = useParams();
 
   useEffect(() => {
-    const loadtask = async () => {
-      if (id) {
-        const task = await getTask(id);
+    const loadTask = async () => {
+      if (params.id) {
+        const task = await getTask(params.id);
         console.log(task);
         setValue("title", task.title);
         setValue("description", task.description);
-        setValue("date", dayjs.utc(task.date).format("YYYY-MM-DD"));
-        console.log(task.date);
+        setValue("date", dayjs(task.date).utc().format());
       }
     };
-    loadtask();
-  }, [id, getTask, setValue]);
+    loadTask();
+  }, []);
 
-  const onSubmit = handleSubmit(async (data) => {
-    if (id) {
-      updateTask(id, {
-        ...data,
-        date: dayjs.utc(data.date),
-      });
+  const onSubmit = handleSubmit((data) => {
+    if (params.id) {
+      updateTask(params.id, { ...data, date: new Date(data.date) });
     } else {
-      createTask({ ...data, date: dayjs.utc(data.date) });
+      createTask({
+        ...data,
+        date: dayjs.utc(data.date).format(),
+      });
     }
+    navigate("/tasks");
   });
 
   return (
-    <div className="flex h-[calc(100vh-100px)] items-center justify-center">
+    <div className="flex h-[calc(100vh-100px)] items-center justify-between">
       <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
         <form onSubmit={onSubmit}>
           <label htmlFor="title">Title</label>
@@ -60,7 +60,6 @@ const TaskFormPage = () => {
           <input
             className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md"
             type="date"
-            {...register("date")}
           />
           <button className="bg-logo-pink-dark px-3 py-2 rounded-md text-white mt-2">
             Save

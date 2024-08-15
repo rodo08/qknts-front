@@ -1,12 +1,12 @@
-import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 import { AddTask, LogoQuickNotes, Logout } from "./Icons";
 
 const Navbar = () => {
   const { isAuthenticated, logout, user } = useAuth();
 
   return (
-    <nav className=" flex items-center justify-between p-4 rounded-lg">
+    <nav className="container flex items-center justify-between p-4 rounded-lg">
       <Link to={isAuthenticated ? "/tasks" : "/"}>
         <div>
           <LogoQuickNotes />
@@ -19,7 +19,7 @@ const Navbar = () => {
           <>
             <li className="justify-center">
               <p>
-                Welcome, <strong> {user.username}</strong>
+                Welcome, <strong> {user?.username}</strong>
               </p>
             </li>
             <li>
@@ -28,7 +28,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link className="text-sky-500" onClick={logout} to="/">
+              <Link className="text-sky-500" onClick={() => logout()} to="/">
                 <Logout />
               </Link>
             </li>
