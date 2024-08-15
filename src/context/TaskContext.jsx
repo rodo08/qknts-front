@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import {
   createTaskRequest,
   getTasksRequest,
@@ -6,7 +6,7 @@ import {
   getTaskRequest,
   updateTaskRequest,
 } from "../api/task"; // Asegúrate de que la ruta sea correcta
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const TaskContext = createContext();
 
@@ -22,12 +22,12 @@ export const useTask = () => {
 
 export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const getTasks = async () => {
     try {
-      const response = await getTasksRequest();
-      setTasks(response.data);
+      const res = await getTasksRequest();
+      setTasks(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -35,12 +35,8 @@ export const TaskProvider = ({ children }) => {
 
   const createTask = async (task) => {
     try {
-      const response = await createTaskRequest(task);
-      if (response.statusText !== "OK") {
-        return;
-      }
-      await getTasks();
-      navigate("/tasks");
+      const res = await createTaskRequest(task);
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -48,8 +44,8 @@ export const TaskProvider = ({ children }) => {
 
   const deleteTask = async (id) => {
     try {
-      const response = await deleteTaskRequest(id);
-      if (response.status === 204) {
+      const res = await deleteTaskRequest(id);
+      if (res.status === 200) {
         setTasks(tasks.filter((task) => task._id !== id));
       }
     } catch (error) {
@@ -59,8 +55,8 @@ export const TaskProvider = ({ children }) => {
 
   const getTask = async (id) => {
     try {
-      const response = await getTaskRequest(id);
-      return response.data;
+      const res = await getTaskRequest(id);
+      return res.data;
     } catch (error) {
       console.log(error);
     }
@@ -68,21 +64,13 @@ export const TaskProvider = ({ children }) => {
 
   const updateTask = async (id, task) => {
     try {
-      const response = await updateTaskRequest(id, task);
-      console.log(response);
-      if (response.statusText !== "OK") {
-        return;
-      }
-      await getTasks();
-      navigate("/tasks");
+      await updateTaskRequest(id, task);
     } catch (error) {
       console.log(error);
     }
-  };
 
-  useEffect(() => {
-    getTasks();
-  }, [setTasks]);
+    await updateTaskRequest(id, task);
+  };
 
   return (
     <TaskContext.Provider
